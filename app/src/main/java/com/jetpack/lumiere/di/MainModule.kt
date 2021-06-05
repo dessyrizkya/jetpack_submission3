@@ -7,11 +7,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import javax.inject.Singleton
 
-@Module
-@InstallIn(LumiereApplication::class)
+//@Module
+//@InstallIn(LumiereApplication::class)
 object MainModule {
-
+/*
     @Provides
     @Singleton
     fun provideApi() = ApiConfig.instance
+
+ */
 }
