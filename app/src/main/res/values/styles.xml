@@ -1,0 +1,58 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/purple</item>
+        <item name="colorPrimaryDark">@color/darkpurple</item>
+        <item name="colorAccent">@color/yellow</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="FontTitle">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:textColor">@color/purple</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="FontMovie">
+        <item name="fontFamily">@font/quicksand</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="FontMovie.Bold">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FontMovie.Regular">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="FontMovie.Larger">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="FontDetailBold">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="FontTab" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">12sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>

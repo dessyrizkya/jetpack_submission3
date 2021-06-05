@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.jetpack.lumiere">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_lumiere"
+        android:label="@string/app_name"
+        android:name=".utils.LumiereApplication"
+        android:roundIcon="@mipmap/ic_launcher_lumiere_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup">
+        <activity android:name=".ui.content.favorite.FavoriteMovieActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ui.content.tvshow.detail.DetailTvShowActivity"
+            android:label="@string/title_activity_detail_tv_show"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.content.movie.detail.DetailMovieActivity"
+            android:label="@string/title_activity_detail_movie"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.splash.SplashScreen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.home.MainActivity"
+            android:configChanges="orientation|screenSize" />
+    </application>
+
+</manifest>
