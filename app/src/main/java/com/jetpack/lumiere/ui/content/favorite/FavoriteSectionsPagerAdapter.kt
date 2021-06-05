@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.jetpack.lumiere.R
-import com.jetpack.lumiere.ui.content.favorite.content.MyFavoriteMovies
+import com.jetpack.lumiere.ui.content.favorite.content.movie.MyFavoriteMovies
+import com.jetpack.lumiere.ui.content.favorite.content.tvshow.MyFavoriteTvShow
 import com.jetpack.lumiere.ui.content.tvshow.TvShowsFragment
 
 class FavoriteSectionsPagerAdapter (private val mContext: Context, fragmentManager: FragmentManager)
@@ -19,7 +20,7 @@ class FavoriteSectionsPagerAdapter (private val mContext: Context, fragmentManag
     override fun getItem(position: Int): Fragment =
         when (position) {
             0 -> MyFavoriteMovies()
-            1 -> TvShowsFragment()
+            1 -> MyFavoriteTvShow()
             else -> Fragment()
         }
 

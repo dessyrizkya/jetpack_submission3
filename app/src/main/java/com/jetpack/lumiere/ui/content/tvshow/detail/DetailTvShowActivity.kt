@@ -12,6 +12,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.jetpack.lumiere.R
 import com.jetpack.lumiere.data.source.local.entity.TvShowDetailEntity
+import com.jetpack.lumiere.data.source.local.room.FavoriteMovie
+import com.jetpack.lumiere.data.source.local.room.FavoriteTvShow
 import com.jetpack.lumiere.data.source.remote.response.TvDetail
 import com.jetpack.lumiere.databinding.ActivityDetailTvShowBinding
 import com.jetpack.lumiere.databinding.ContentDetailTvShowBinding
@@ -27,6 +29,14 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var contentDetailTvShowBinding: ContentDetailTvShowBinding
     private lateinit var activityDetailTvShowBinding: ActivityDetailTvShowBinding
     private lateinit var tvShowViewModel: TvShowsViewModel
+
+    private lateinit var item: FavoriteTvShow
+    private lateinit var tvshowId:String
+    private lateinit var title:String
+    private lateinit var description:String
+    private lateinit var year:String
+    private lateinit var genre:String
+    private lateinit var poster:String
 
     private var url: String = "https://www.youtube.com/results?search_query="
 
@@ -47,13 +57,21 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
         val extras = intent.extras
 
         if (extras != null) {
-            val tvshowId = extras.getString(EXTRA_TVSHOW).toString()
+            tvshowId = extras.getString(EXTRA_TVSHOW).toString()
             val id = tvshowId.toInt()
 
             tvShowViewModel.getTvShow(id).observe(this, {
                 showLoading(true)
                 if (it != null) {
                     url = "${url}${it.title}"
+
+                    title = it.title
+                    description = it.description
+                    year = it.year
+                    genre = it.genre
+                    poster = it.poster
+                    item = FavoriteTvShow(tvshowId, title, description, year, genre, poster, null)
+
                     showDetailTvshow(it)
                     showLoading(false)
                 } else {
@@ -66,8 +84,19 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
             activityDetailTvShowBinding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        contentDetailTvShowBinding.btnDetailTrailer.setOnClickListener(this)
+        isFavorited()
 
+        contentDetailTvShowBinding.btnDetailTrailer.setOnClickListener(this)
+        contentDetailTvShowBinding.tbFav.setOnClickListener(this)
+
+    }
+
+    private fun isFavorited() {
+        tvShowViewModel.isFavorited(application, tvshowId).observe(this, {
+            if (it.isNotEmpty()) {
+                contentDetailTvShowBinding.tbFav.isChecked = true
+            }
+        })
     }
 
     private fun showDetailTvshow(tvshow: TvShowDetailEntity) {
@@ -102,7 +131,24 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
                     Toast.makeText(this, "There is no trailer that we can show", Toast.LENGTH_SHORT).show()
                 }
             }
+            R.id.tb_fav -> {
+                if (contentDetailTvShowBinding.tbFav.isChecked) {
+                    addToFavorite()
+                } else {
+                    removeFromFavorite()
+                }
+            }
         }
+    }
+
+    private fun removeFromFavorite() {
+        tvShowViewModel.delete(application, item)
+        Toast.makeText(this, "You just remove $title from favorite", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun addToFavorite() {
+        tvShowViewModel.insert(application, item)
+        Toast.makeText(this, "You just add $title to favorite", Toast.LENGTH_SHORT).show()
     }
 
     private fun showLoading(isLoading: Boolean) {

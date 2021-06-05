@@ -15,7 +15,7 @@ import com.jetpack.lumiere.data.source.remote.response.TvShowResponse
 import com.jetpack.lumiere.databinding.ItemsTvshowBinding
 import com.jetpack.lumiere.ui.content.tvshow.detail.DetailTvShowActivity
 
-class TvShowsAdapter(private val listTvShow : List<TvShowEntity>, private val listGenres : List<GenresItem>) : RecyclerView.Adapter<TvShowsAdapter.TvShowViewHolder>() {
+class TvShowsAdapter(private val listTvShow : List<TvShowEntity>, private val listGenres : List<GenresItem>?) : RecyclerView.Adapter<TvShowsAdapter.TvShowViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvShowViewHolder {
         val itemsTvshowBinding = ItemsTvshowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,16 +29,20 @@ class TvShowsAdapter(private val listTvShow : List<TvShowEntity>, private val li
         holder.bind(tvshow)
     }
 
-    class TvShowViewHolder(private val binding: ItemsTvshowBinding, private val listGenres : List<GenresItem>) : RecyclerView.ViewHolder(binding.root) {
+    class TvShowViewHolder(private val binding: ItemsTvshowBinding, private val listGenres : List<GenresItem>?) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tvshow: TvShowEntity) {
             with(binding) {
                 var genre = "tes"
 
-                for (g in listGenres) {
-                    if (tvshow.genre.toInt() == g.genreId) {
-                        genre = g.genre
-                        break
+                if (listGenres != null) {
+                    for (g in listGenres) {
+                        if (tvshow.genre.toInt() == g.genreId) {
+                            genre = g.genre
+                            break
+                        }
                     }
+                } else {
+                    genre = tvshow.genre
                 }
 
                 tvTvshowTitle.text = tvshow.title
