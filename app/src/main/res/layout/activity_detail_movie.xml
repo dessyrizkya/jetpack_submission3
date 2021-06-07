@@ -15,6 +15,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            app:titleTextColor="@color/yellow"
             app:title="@string/detail_movie"
             app:navigationIcon="@drawable/ic_back"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />

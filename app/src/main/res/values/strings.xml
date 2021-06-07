@@ -16,4 +16,9 @@
     <string name="favorite">Favorite</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo">Logo</string>
+    <string name="try_again">Try Again</string>
+    <string name="lost_connection">Lost Connection</string>
+    <string name="empty">empty</string>
+    <string name="result_could_not_be_loaded">Result could not be loaded</string>
 </resources>
