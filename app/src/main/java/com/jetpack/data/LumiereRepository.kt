@@ -113,24 +113,24 @@ class LumiereRepository @Inject constructor(private val api: Api, private val da
     }
 
 
-    fun insertFavMovie(favoriteMovie: FavoriteMovie) =
+    override fun insertFavMovie(favoriteMovie: FavoriteMovie) =
         dao.insertMovie(favoriteMovie)
 
-    fun deleteFavMovie(favoriteMovie: FavoriteMovie) =
+    override fun deleteFavMovie(favoriteMovie: FavoriteMovie) =
         dao.deleteMovie(favoriteMovie)
 
-    fun getAllFavMovies() : LiveData<List<FavoriteMovie>> = dao.getAllMovies()
+    override fun getAllFavMovies() : LiveData<List<FavoriteMovie>> = dao.getAllMovies()
 
-    fun getFavMovie(id: String) : LiveData<List<FavoriteMovie>> = dao.getMovieById(id)
+    override fun getFavMovie(id: String) : LiveData<List<FavoriteMovie>> = dao.getMovieById(id)
 
 
-    fun insertFavTvShow(favoriteTvShow: FavoriteTvShow) =
+    override fun insertFavTvShow(favoriteTvShow: FavoriteTvShow) =
         dao.insertTvShow(favoriteTvShow)
 
-    fun deleteFavTvShow(favoriteTvShow: FavoriteTvShow) =
+    override fun deleteFavTvShow(favoriteTvShow: FavoriteTvShow) =
         dao.deleteTvShow(favoriteTvShow)
 
-    fun getAllFavTvShows() : LiveData<List<FavoriteTvShow>> = dao.getAllTvShows()
+    override fun getAllFavTvShows() : LiveData<List<FavoriteTvShow>> = dao.getAllTvShows()
 
-    fun getFavTvShow(id: String) : LiveData<List<FavoriteTvShow>> = dao.getTvshowById(id)
+    override fun getFavTvShow(id: String) : LiveData<List<FavoriteTvShow>> = dao.getTvshowById(id)
 }
