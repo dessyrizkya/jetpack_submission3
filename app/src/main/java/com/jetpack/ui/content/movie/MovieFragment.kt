@@ -9,10 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jetpack.R
 import com.jetpack.data.source.remote.response.GenresItem
 import com.jetpack.databinding.FragmentMovieBinding
 import com.jetpack.vo.Status

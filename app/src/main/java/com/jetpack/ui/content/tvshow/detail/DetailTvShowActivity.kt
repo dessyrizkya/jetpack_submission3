@@ -107,6 +107,7 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setFavorite(tvshow: TvShowEntity) {
+        tvshow.isFavorited = !tvshow.isFavorited
         viewModel.setFav(tvshow)
 
         if (contentBinding.tbFav.isChecked) {

@@ -101,6 +101,7 @@ class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setFavorite(movie: MovieEntity) {
+        movie.isFavorited = !movie.isFavorited
         viewModel.setFav(movie)
 
         if (contentBinding.tbFav.isChecked) {

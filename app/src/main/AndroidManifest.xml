@@ -7,14 +7,22 @@
     <application
         android:name=".utils.LumiereApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_lumiere"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_lumiere_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.splashscreen.SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.favorite.FavoriteActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.content.tvshow.detail.DetailTvShowActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -22,12 +30,7 @@
             android:name=".ui.content.movie.detail.DetailMovieActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.home.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".ui.home.MainActivity"/>
     </application>
 
 </manifest>
