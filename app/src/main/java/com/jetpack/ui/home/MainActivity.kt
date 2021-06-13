@@ -1,10 +1,13 @@
 package com.jetpack.ui.home
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import com.jetpack.R
 import com.jetpack.databinding.ActivityMainBinding
+import com.jetpack.ui.favorite.FavoriteActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,5 +32,16 @@ class MainActivity : AppCompatActivity(){
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_fav -> {
+                val moveIntent = Intent(this@MainActivity, FavoriteActivity::class.java)
+                startActivity(moveIntent)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

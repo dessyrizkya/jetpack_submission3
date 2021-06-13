@@ -45,8 +45,8 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val extra = intent.getStringExtra(EXTRA_TVSHOW)
-        observeDetailTvShow(extra.toString())
+        val id = intent.getStringExtra(EXTRA_TVSHOW)
+        observeDetailTvShow(id.toString())
     }
 
     private fun observeDetailTvShow(id: String) {
@@ -78,7 +78,12 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
+    private fun isFavorited(isFav : Boolean) {
+        contentBinding.tbFav.isChecked = isFav
+    }
+
     private fun showDetailTvShow(tvshow: TvShowEntity) {
+        isFavorited(tvshow.isFavorited)
         with(contentBinding) {
 
             tvDetailTvshowTitle.text = tvshow.title
@@ -97,6 +102,17 @@ class DetailTvShowActivity : AppCompatActivity(), View.OnClickListener {
 
             url = "${url}${tvshow.title}"
             btnDetailTrailer.setOnClickListener(this@DetailTvShowActivity)
+            tbFav.setOnClickListener { setFavorite(tvshow) }
+        }
+    }
+
+    private fun setFavorite(tvshow: TvShowEntity) {
+        viewModel.setFav(tvshow)
+
+        if (contentBinding.tbFav.isChecked) {
+            Toast.makeText(this, "You just add ${tvshow.title} to favorite", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "You just remove ${tvshow.title} from favorite", Toast.LENGTH_SHORT).show()
         }
     }
 

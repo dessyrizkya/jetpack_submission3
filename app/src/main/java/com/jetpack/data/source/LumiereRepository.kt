@@ -14,10 +14,9 @@ import com.jetpack.data.source.remote.RemoteDataSource
 import com.jetpack.data.source.remote.RemoteDataSource.Companion.apiKey
 import com.jetpack.data.source.remote.RemoteDataSource.Companion.language
 import com.jetpack.data.source.remote.response.*
-import com.jetpack.utils.AppExecutors
 import com.jetpack.vo.Resource
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -96,6 +95,15 @@ class LumiereRepository @Inject constructor(
         }.asLiveData()
     }
 
+    override fun getFavMovies(): LiveData<PagedList<MovieEntity>> {
+        val config = PagedList.Config.Builder().apply {
+            setEnablePlaceholders(false)
+            setInitialLoadSizeHint(4)
+            setPageSize(4)
+        }.build()
+        return LivePagedListBuilder(localDataSource.getFavMovies(), config).build()
+    }
+
     override fun getAllTvShows(): LiveData<Resource<PagedList<TvShowEntity>>> {
         return object : NetworkBoundResource<PagedList<TvShowEntity>, List<TvResultsItem>>() {
             override fun loadFromDB(): LiveData<PagedList<TvShowEntity>> {
@@ -162,6 +170,15 @@ class LumiereRepository @Inject constructor(
         }.asLiveData()
     }
 
+    override fun getFavTvShows(): LiveData<PagedList<TvShowEntity>> {
+        val config = PagedList.Config.Builder().apply {
+            setEnablePlaceholders(false)
+            setInitialLoadSizeHint(4)
+            setPageSize(4)
+        }.build()
+        return LivePagedListBuilder(localDataSource.getFavTvShows(), config).build()
+    }
+
     override fun getAllGenres(): LiveData<List<GenresItem>> {
         val _genres = MutableLiveData<List<GenresItem>>()
         val client = api.getGenres(apiKey, language)
@@ -182,5 +199,17 @@ class LumiereRepository @Inject constructor(
 
         val genres : LiveData<List<GenresItem>> = _genres
         return genres
+    }
+
+    override fun setFavMovie(movie: MovieEntity) {
+        CoroutineScope(IO).launch {
+            localDataSource.setFavMovie(movie)
+        }
+    }
+
+    override fun setFavTvShow(tv: TvShowEntity) {
+        CoroutineScope(IO).launch {
+            localDataSource.setFavTvshow(tv)
+        }
     }
 }

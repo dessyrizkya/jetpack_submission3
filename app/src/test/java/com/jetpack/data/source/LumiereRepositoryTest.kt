@@ -60,6 +60,18 @@ class LumiereRepositoryTest {
     }
 
     @Test
+    fun getFavMovies() {
+        val datasourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, MovieEntity>
+        `when` (local.getFavMovies()).thenReturn(datasourceFactory)
+        repository.getFavMovies()
+
+        val movieEntity = Resource.success(PagedListUtil.mockPagedList(DataDummy.generateDummyMovies()))
+        verify(local).getFavMovies()
+        assertNotNull(movieEntity.data)
+        assertEquals(listMovie.size.toLong(), movieEntity.data?.size?.toLong())
+    }
+
+    @Test
     fun getAllTvShows() {
         val datasourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, TvShowEntity>
         `when` (local.getAllTvShows()).thenReturn(datasourceFactory)
@@ -81,6 +93,18 @@ class LumiereRepositoryTest {
         verify(local).getTv(tvShowId)
         assertNotNull(tvshowEntity)
         assertEquals(tvShow.tvshowId, tvshowEntity.data?.tvshowId)
+    }
+
+    @Test
+    fun getFavTvShows() {
+        val datasourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, TvShowEntity>
+        `when` (local.getFavTvShows()).thenReturn(datasourceFactory)
+        repository.getFavTvShows()
+
+        val tvshowEntity = Resource.success(PagedListUtil.mockPagedList(DataDummy.generateDummyTvShows()))
+        verify(local).getFavTvShows()
+        assertNotNull(tvshowEntity.data)
+        assertEquals(listTvShow.size.toLong(), tvshowEntity.data?.size?.toLong())
     }
 
 }

@@ -3,7 +3,6 @@ package com.jetpack.ui.content.tvshow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.jetpack.data.local.entity.MovieEntity
 import com.jetpack.data.local.entity.TvShowEntity
 import com.jetpack.data.source.LumiereRepository
 import com.jetpack.data.source.remote.response.GenresItem
@@ -16,6 +15,9 @@ class TvShowViewModel @Inject constructor(private val lumiereRepository: Lumiere
 
     fun getAllTvShows(): LiveData<Resource<PagedList<TvShowEntity>>> = lumiereRepository.getAllTvShows()
     fun getGenres(): LiveData<List<GenresItem>> = lumiereRepository.getAllGenres()
+    fun setFav(tvshow: TvShowEntity) {
+        lumiereRepository.setFavTvShow(tvshow)
+    }
 
     fun getDetail(tvId: Int) : LiveData<Resource<TvShowEntity>> = lumiereRepository.getTvDetail(tvId)
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -42,10 +43,8 @@ class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-        val extra = intent.getStringExtra(EXTRA_MOVIE)
-
-        observeDetailMovie(extra.toString())
+        val id = intent.getStringExtra(EXTRA_MOVIE)
+        observeDetailMovie(id.toString())
     }
 
     private fun observeDetailMovie(id: String) {
@@ -71,19 +70,22 @@ class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
                         Toast.makeText(this, "Check your internet connection", Toast.LENGTH_SHORT).show()
                     }
                 }
-
             }
         })
     }
 
-    private fun showDetailMovie(movie: MovieEntity) {
-        with(contentBinding) {
+    private fun isFavorited(isFav : Boolean) {
+        contentBinding.tbFav.isChecked = isFav
+    }
 
+    private fun showDetailMovie(movie: MovieEntity) {
+        isFavorited(movie.isFavorited)
+
+        with(contentBinding) {
             tvDetailMovieTitle.text = movie.title
             tvDetailMovieYear.text = movie.year
             tvDetailMovieGenre.text = movie.genre
             tvDetailMovieDescription.text = movie.description
-
 
             Glide.with(this@DetailMovieActivity)
                 .load("https://image.tmdb.org/t/p/original/${movie.poster.trim()}")
@@ -94,6 +96,17 @@ class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
 
             url = "${url}${movie.title}"
             btnDetailTrailer.setOnClickListener(this@DetailMovieActivity)
+            tbFav.setOnClickListener { setFavorite(movie) }
+        }
+    }
+
+    private fun setFavorite(movie: MovieEntity) {
+        viewModel.setFav(movie)
+
+        if (contentBinding.tbFav.isChecked) {
+            Toast.makeText(this, "You just add ${movie.title} to favorite", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "You just remove ${movie.title} from favorite", Toast.LENGTH_SHORT).show()
         }
     }
 

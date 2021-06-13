@@ -1,6 +1,7 @@
 package com.jetpack.ui.content.movie
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter

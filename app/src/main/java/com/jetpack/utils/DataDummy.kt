@@ -16,14 +16,14 @@ object DataDummy {
                     "But when an evil force threatened the land, the dragons sacrificed themselves to save " +
                     "humanity. Now, 500 years later, that same evil has returned and it’s up to a lone warrior, " +
                     "Raya, to track down the legendary last dragon to restore the fractured land and its divided people.", "2021",
-                "Fantasy", "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/6t7X3LMwVtCubcmk9HWI1M9RtbK.jpg", false)
+                "Fantasy", "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/6t7X3LMwVtCubcmk9HWI1M9RtbK.jpg", true)
         )
 
         movies.add(
             MovieEntity("2", "Flipped", "When Juli meets Bryce in the second grade, she knows" +
                     "it's true love. After spending six years trying to convince Bryce the same, she's ready to give up - until" +
                     "he starts to reconsider.", "2010",
-                "Romance", "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/zurKuLCZzjn18HMzADW6aRoY4Wj.jpg", false)
+                "Romance", "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/zurKuLCZzjn18HMzADW6aRoY4Wj.jpg", true)
         )
 
         movies.add(
@@ -103,7 +103,7 @@ object DataDummy {
                     "using Hinata's mobility and Kageyama's precision ball-handling. Together with their team, they compete in prefecture " +
                     "tournaments and promise to meet Kurasuno's fated rival school at nationals.", "2014",
                 "Comedy", "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pLpQZHVduTzJTOVNmWfppY9tk3W.jpg",
-                "85", false)
+                "85", true)
         )
 
         tvshows.add(
@@ -119,7 +119,7 @@ object DataDummy {
                     "together in the process, all the old feelings that still exist between them and have long been stashed away are bound " +
                     "to come up again.", "2011",
                 "Mystery", "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/2tgOAvOttp7rak3r2U5vIAaeyDt.jpg",
-                "11", false)
+                "11", true)
         )
 
         tvshows.add(

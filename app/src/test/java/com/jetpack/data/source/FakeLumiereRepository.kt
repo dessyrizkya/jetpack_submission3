@@ -93,6 +93,15 @@ class FakeLumiereRepository @Inject constructor(
         }.asLiveData()
     }
 
+    override fun getFavMovies(): LiveData<PagedList<MovieEntity>> {
+        val config = PagedList.Config.Builder().apply {
+            setEnablePlaceholders(false)
+            setInitialLoadSizeHint(4)
+            setPageSize(4)
+        }.build()
+        return LivePagedListBuilder(localDataSource.getFavMovies(), config).build()
+    }
+
     override fun getAllTvShows(): LiveData<Resource<PagedList<TvShowEntity>>> {
         return object : NetworkBoundResource<PagedList<TvShowEntity>, List<TvResultsItem>>() {
             override fun loadFromDB(): LiveData<PagedList<TvShowEntity>> {
@@ -159,6 +168,15 @@ class FakeLumiereRepository @Inject constructor(
         }.asLiveData()
     }
 
+    override fun getFavTvShows(): LiveData<PagedList<TvShowEntity>> {
+        val config = PagedList.Config.Builder().apply {
+            setEnablePlaceholders(false)
+            setInitialLoadSizeHint(4)
+            setPageSize(4)
+        }.build()
+        return LivePagedListBuilder(localDataSource.getFavTvShows(), config).build()
+    }
+
     override fun getAllGenres(): LiveData<List<GenresItem>> {
         val _genres = MutableLiveData<List<GenresItem>>()
         val client = api.getGenres(RemoteDataSource.apiKey, RemoteDataSource.language)
@@ -179,5 +197,17 @@ class FakeLumiereRepository @Inject constructor(
 
         val genres : LiveData<List<GenresItem>> = _genres
         return genres
+    }
+
+    override fun setFavMovie(movie: MovieEntity) {
+        CoroutineScope(Dispatchers.IO).launch {
+            localDataSource.setFavMovie(movie)
+        }
+    }
+
+    override fun setFavTvShow(tv: TvShowEntity) {
+        CoroutineScope(Dispatchers.IO).launch {
+            localDataSource.setFavTvshow(tv)
+        }
     }
 }

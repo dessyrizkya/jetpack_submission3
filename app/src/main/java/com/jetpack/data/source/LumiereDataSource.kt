@@ -12,9 +12,14 @@ import com.jetpack.vo.Resource
 interface LumiereDataSource {
     fun getAllMovies(): LiveData<Resource<PagedList<MovieEntity>>>
     fun getMovieDetail(movieId : Int): LiveData<Resource<MovieEntity>>
+    fun getFavMovies(): LiveData<PagedList<MovieEntity>>
 
     fun getAllTvShows(): LiveData<Resource<PagedList<TvShowEntity>>>
     fun getTvDetail(tvId : Int): LiveData<Resource<TvShowEntity>>
+    fun getFavTvShows(): LiveData<PagedList<TvShowEntity>>
 
     fun getAllGenres(): LiveData<List<GenresItem>>
+
+    fun setFavMovie(movie: MovieEntity)
+    fun setFavTvShow(tv: TvShowEntity)
 }
