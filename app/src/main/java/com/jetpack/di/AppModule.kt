@@ -1,43 +1,74 @@
 package com.jetpack.di
 
-import android.content.Context
-import androidx.room.Room
-import com.jetpack.Api.Api
-import com.jetpack.data.source.local.room.LumiereDatabase
+import android.app.Application
+import com.jetpack.api.Api
+import com.jetpack.data.local.LocalDataSource
+import com.jetpack.data.local.room.LumiereDao
+import com.jetpack.data.local.room.LumiereDatabase
+import com.jetpack.data.source.LumiereRepository
+import com.jetpack.data.source.remote.RemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    private const val base_url = "https://api.themoviedb.org/3/"
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext app: Context) =
-        Room.databaseBuilder(app, LumiereDatabase::class.java, "lumiere_db")
-            .build()
+    fun provideHttpClient(): OkHttpClient = OkHttpClient.Builder().apply {
+        connectTimeout(30, TimeUnit.SECONDS)
+        readTimeout(30, TimeUnit.SECONDS)
+        writeTimeout(30, TimeUnit.SECONDS)
+    }.build()
 
     @Singleton
     @Provides
-    fun provideDao(db: LumiereDatabase) = db.lumiereDao()
+    fun provideRetrofitInstance(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder().apply {
+        baseUrl(base_url)
+        client(okHttpClient)
+        addConverterFactory(GsonConverterFactory.create())
+    }.build()
 
     @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(Api.base_url)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
 
-    @Provides
+
+
     @Singleton
-    fun provideApi(retrofit: Retrofit): Api =
-        retrofit.create(Api::class.java)
+    @Provides
+    fun provideDatabase(application: Application): LumiereDatabase =
+        LumiereDatabase.getInstance(application)
+
+    @Singleton
+    @Provides
+    fun provideDao(lumiereDatabase: LumiereDatabase): LumiereDao =
+        lumiereDatabase.lumiereDao()
+
+    @Singleton
+    @Provides
+    fun provideLocalDataSource(lumiereDao: LumiereDao): LocalDataSource =
+        LocalDataSource(lumiereDao)
+
+    @Singleton
+    @Provides
+    fun provideRemoteDataSource(api: Api): RemoteDataSource =
+        RemoteDataSource(api)
+
+    @Singleton
+    @Provides
+    fun provideCatalogRepository(
+        api: Api,
+        remoteDataSource: RemoteDataSource,
+        localDataSource: LocalDataSource
+    ): LumiereRepository = LumiereRepository(api, remoteDataSource, localDataSource)
+
 }

@@ -2,39 +2,21 @@ package com.jetpack.ui.content.tvshow
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.jetpack.data.LumiereRepository
-import com.jetpack.data.source.local.entity.TvShowDetailEntity
-import com.jetpack.data.source.local.room.FavoriteMovie
-import com.jetpack.data.source.local.room.FavoriteTvShow
+import androidx.paging.PagedList
+import com.jetpack.data.local.entity.MovieEntity
+import com.jetpack.data.local.entity.TvShowEntity
+import com.jetpack.data.source.LumiereRepository
 import com.jetpack.data.source.remote.response.GenresItem
+import com.jetpack.vo.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TvshowViewModel @Inject constructor(private val lumiereRepository: LumiereRepository) : ViewModel() {
+class TvShowViewModel @Inject constructor(private val lumiereRepository: LumiereRepository) : ViewModel() {
 
-    val tvshows = lumiereRepository.getAllTvshows()
+    fun getAllTvShows(): LiveData<Resource<PagedList<TvShowEntity>>> = lumiereRepository.getAllTvShows()
+    fun getGenres(): LiveData<List<GenresItem>> = lumiereRepository.getAllGenres()
 
-    fun getGenres() : LiveData<List<GenresItem>> = lumiereRepository.getAllTvGenres()
-
-    fun getTvShow(tv_id: Int) : LiveData<TvShowDetailEntity> = lumiereRepository.getDetailTv(tv_id)
-
-    fun insert(favoriteTvShow: FavoriteTvShow) {
-        viewModelScope.launch(Dispatchers.IO) {
-            lumiereRepository.insertFavTvShow(favoriteTvShow)
-        }
-    }
-
-    fun delete(favoriteTvShow: FavoriteTvShow) {
-        viewModelScope.launch(Dispatchers.IO) {
-            lumiereRepository.deleteFavTvShow(favoriteTvShow)
-        }
-    }
-
-    fun isFavorited(id: String) : LiveData<List<FavoriteTvShow>> = lumiereRepository.getFavTvShow(id)
-
+    fun getDetail(tvId: Int) : LiveData<Resource<TvShowEntity>> = lumiereRepository.getTvDetail(tvId)
 
 }

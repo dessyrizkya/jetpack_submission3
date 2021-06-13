@@ -1,4 +1,4 @@
-package com.jetpack.Api
+package com.jetpack.api
 
 import com.jetpack.data.source.remote.response.*
 import retrofit2.Call
@@ -7,27 +7,33 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Api {
+    @GET("movie/popular")
+    fun getMovies(@Query("api_key") apiKey: String,
+                  @Query("language") language: String)
+            : Call<MovieResponse>
 
-    companion object {
-        const val base_url = "https://api.themoviedb.org/3/"
-        const val api_key = "2c5873fb96074b9507457be681dc065d"
-    }
+    @GET("genre/movie/list")
+    fun getGenres(@Query("api_key") api_key: String,
+                  @Query("language") language: String)
+            : Call<GenreResponse>
 
-    @GET("movie/popular?api_key=$api_key")
-    suspend fun getMovies(@Query("page") position: Int): MovieResponse
+    @GET("movie/{movie_id}")
+    fun getMovieDetail(@Path("movie_id") movie_id: Int,
+                       @Query("api_key") api_key : String)
+            : Call<MovieDetail>
 
-    @GET("genre/movie/list?api_key=$api_key")
-    fun getGenres(): Call<GenreResponse>
+    @GET("tv/popular")
+    fun getTvShows(@Query("api_key") api_key: String,
+                   @Query("language") language: String)
+            : Call<TvShowResponse>
 
-    @GET("movie/{movie_id}?api_key=$api_key")
-    suspend fun getMovieDetail(@Path("movie_id") movie_id: Int): MovieDetail
+    @GET("tv/{tv_id}")
+    fun getTvDetail(@Path("tv_id") tv_id: Int,
+                    @Query("api_key") api_key: String)
+            : Call<TvDetail>
 
-    @GET("tv/popular?api_key=$api_key")
-    suspend fun getTvShows(@Query("page") position: Int): TvShowResponse
-
-    @GET("tv/{tv_id}?api_key=$api_key")
-    suspend fun getTvDetail(@Path("tv_id") tv_id: Int): TvDetail
-
-    @GET("genre/tv/list?api_key=$api_key")
-    fun getTvGenres(): Call<GenreResponse>
+    @GET("genre/tv/list")
+    fun getTvGenres(@Query("api_key") api_key: String,
+                    @Query("language") language: String)
+            : Call<GenreResponse>
 }

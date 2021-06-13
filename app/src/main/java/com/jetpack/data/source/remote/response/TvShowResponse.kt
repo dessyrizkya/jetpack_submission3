@@ -1,15 +1,12 @@
 package com.jetpack.data.source.remote.response
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
 data class TvShowResponse(
     @field:SerializedName("results")
     val results: List<TvResultsItem>,
 )
 
-@Parcelize
 data class TvResultsItem(
 
     @field:SerializedName("first_air_date")
@@ -29,7 +26,7 @@ data class TvResultsItem(
 
     @field:SerializedName("id")
     val tvId: Int
-) : Parcelable
+)
 
 data class TvDetail(
 

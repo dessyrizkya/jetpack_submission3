@@ -1,34 +1,21 @@
 package com.jetpack.ui.content.movie
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.jetpack.data.LumiereRepository
-import com.jetpack.data.source.local.room.FavoriteMovie
+import androidx.paging.PagedList
+
+import com.jetpack.data.local.entity.MovieEntity
+import com.jetpack.data.source.LumiereRepository
 import com.jetpack.data.source.remote.response.GenresItem
+import com.jetpack.vo.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MovieViewModel @Inject constructor(private val lumiereRepository: LumiereRepository) : ViewModel() {
-    val movies = lumiereRepository.getAllMovies()
 
-    fun getGenres() : LiveData<List<GenresItem>> = lumiereRepository.genAllGenres()
+    fun getAllMovies(): LiveData<Resource<PagedList<MovieEntity>>> = lumiereRepository.getAllMovies()
+    fun getGenres(): LiveData<List<GenresItem>> = lumiereRepository.getAllGenres()
 
-    fun insert(favoriteMovie: FavoriteMovie) {
-        viewModelScope.launch(Dispatchers.IO) {
-            lumiereRepository.insertFavMovie(favoriteMovie)
-        }
-    }
-
-    fun delete(favoriteMovie: FavoriteMovie) {
-        viewModelScope.launch(Dispatchers.IO) {
-            lumiereRepository.deleteFavMovie(favoriteMovie)
-        }
-    }
-
-    fun isFavorited(id: String) : LiveData<List<FavoriteMovie>> = lumiereRepository.getFavMovie(id)
+    fun getDetail(movieId : Int): LiveData<Resource<MovieEntity>> = lumiereRepository.getMovieDetail(movieId)
 }

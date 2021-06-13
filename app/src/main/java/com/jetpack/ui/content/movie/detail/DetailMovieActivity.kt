@@ -4,91 +4,86 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.jetpack.R
-import com.jetpack.data.source.local.entity.MovieEntity
-import com.jetpack.data.source.local.room.FavoriteMovie
-import com.jetpack.data.source.remote.response.GenresItem
-import com.jetpack.data.source.remote.response.ResultsItem
+import com.jetpack.data.local.entity.MovieEntity
 import com.jetpack.databinding.ActivityDetailMovieBinding
 import com.jetpack.databinding.ContentDetailMovieBinding
+import com.jetpack.databinding.FragmentMovieBinding
 import com.jetpack.ui.content.movie.MovieViewModel
+import com.jetpack.vo.Status
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
 
+    private lateinit var binding: ActivityDetailMovieBinding
+    private lateinit var contentBinding: ContentDetailMovieBinding
+    private val viewModel : MovieViewModel by viewModels()
+    private var url: String = "https://www.youtube.com/results?search_query="
+
     companion object {
         const val EXTRA_MOVIE = "extra_movie"
     }
 
-    private lateinit var contentDetailMovieBinding: ContentDetailMovieBinding
-    private lateinit var activityDetailMovieBinding: ActivityDetailMovieBinding
-    private val movieViewModel : MovieViewModel by viewModels()
-
-    private lateinit var item: FavoriteMovie
-    private lateinit var movieId:String
-    private lateinit var title:String
-    private lateinit var description:String
-    private lateinit var year:String
-    private lateinit var genre:String
-    private lateinit var poster:String
-
-    private var url: String = "https://www.youtube.com/results?search_query="
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDetailMovieBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        activityDetailMovieBinding = ActivityDetailMovieBinding.inflate(layoutInflater)
-        contentDetailMovieBinding = activityDetailMovieBinding.contentDetailMovie
+        contentBinding = binding.contentDetailMovie
 
-        setContentView(activityDetailMovieBinding.root)
-
-        setSupportActionBar(activityDetailMovieBinding.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val extras = intent.getParcelableExtra<MovieEntity>(EXTRA_MOVIE)
 
-        if (extras != null) {
-            movieId = extras.movieId
-            title = extras.title
-            description = extras.description
-            year = extras.year
-            genre = extras.genre
-            poster = extras.poster
+        val extra = intent.getStringExtra(EXTRA_MOVIE)
 
-            url = "${url}${title}"
+        observeDetailMovie(extra.toString())
+    }
 
-            item = FavoriteMovie(movieId, title, description, year, genre, poster)
+    private fun observeDetailMovie(id: String) {
+        viewModel.getDetail(id.toInt()).observe(this, { movie->
+            if (movie != null) {
+                when(movie.status) {
+                    Status.LOADING -> showLoading(true)
+                    Status.SUCCESS -> {
+                        showLoading(false)
+                        val item = MovieEntity(
+                            movie.data?.movieId.toString(),
+                            movie.data?.title.toString(),
+                            movie.data?.description.toString(),
+                            movie.data?.year.toString(),
+                            movie.data?.genre.toString(),
+                            movie.data?.poster.toString(),
+                            movie.data!!.isFavorited,
+                        )
+                        showDetailMovie(item)
+                    }
+                    Status.ERROR -> {
+                        showLoading(false)
+                        Toast.makeText(this, "Check your internet connection", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-            showLoading(true)
-            showDetailMovie(extras)
-            showLoading(false)
-        }
-
-        isFavorited()
-
-        contentDetailMovieBinding.btnDetailTrailer.setOnClickListener(this)
-        contentDetailMovieBinding.tbFav.setOnClickListener(this)
+            }
+        })
     }
 
     private fun showDetailMovie(movie: MovieEntity) {
-        with(contentDetailMovieBinding) {
+        with(contentBinding) {
 
-            tvDetailMovieGenre.text = movie.genre
             tvDetailMovieTitle.text = movie.title
             tvDetailMovieYear.text = movie.year
-
+            tvDetailMovieGenre.text = movie.genre
             tvDetailMovieDescription.text = movie.description
+
 
             Glide.with(this@DetailMovieActivity)
                 .load("https://image.tmdb.org/t/p/original/${movie.poster.trim()}")
@@ -96,6 +91,9 @@ class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_loading))
                 .error(R.drawable.ic_image)
                 .into(imgDetailMoviePoster)
+
+            url = "${url}${movie.title}"
+            btnDetailTrailer.setOnClickListener(this@DetailMovieActivity)
         }
     }
 
@@ -111,40 +109,17 @@ class DetailMovieActivity : AppCompatActivity(), View.OnClickListener {
                     val openBrowser = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     startActivity(openBrowser)
                 } else {
-                    Toast.makeText(this, "There is no trailer that we can show", Toast.LENGTH_SHORT).show()
-                }
-            }
-            R.id.tb_fav -> {
-                if (contentDetailMovieBinding.tbFav.isChecked) {
-                   addToFavorite()
-                } else {
-                   removeFromFavorite()
+                    Toast.makeText(this, resources.getString(R.string.trailer_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun isFavorited(){
-        movieViewModel.isFavorited(movieId).observe(this, {
-            if (it.isNotEmpty()) {
-                contentDetailMovieBinding.tbFav.isChecked = true
-            }
-        })
-    }
-
-
-    private fun removeFromFavorite() {
-        movieViewModel.delete(item)
-        Toast.makeText(this, "You just remove $title from favorite", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun addToFavorite() {
-        movieViewModel.insert(item)
-        Toast.makeText(this, "You just add $title to favorite", Toast.LENGTH_SHORT).show()
-    }
-
-
     private fun showLoading(isLoading: Boolean) {
-        activityDetailMovieBinding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
     }
 }

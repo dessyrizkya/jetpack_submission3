@@ -1,56 +1,37 @@
 package com.jetpack.ui.content.tvshow
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.jetpack.R
-import com.jetpack.data.source.local.entity.TvShowDetailEntity
+import com.jetpack.data.local.entity.TvShowEntity
 import com.jetpack.data.source.remote.response.GenresItem
-import com.jetpack.data.source.remote.response.TvResultsItem
 import com.jetpack.databinding.ItemsTvshowBinding
 import com.jetpack.ui.content.tvshow.detail.DetailTvShowActivity
 
-class TvshowAdapter(private val listGenres: List<GenresItem>) : PagingDataAdapter<TvResultsItem, TvshowAdapter.TvViewHolder>(COMPARATOR) {
-    companion object {
-        private val COMPARATOR = object : DiffUtil.ItemCallback<TvResultsItem>() {
-            override fun areItemsTheSame(oldItem: TvResultsItem, newItem: TvResultsItem): Boolean =
-                oldItem.tvId == newItem.tvId
+class TvShowAdapter(private val listGenre: List<GenresItem>):
+    PagedListAdapter<TvShowEntity, TvShowAdapter.TvShowViewHolder>(DIFF_CALLBACK) {
 
-            override fun areContentsTheSame(oldItem: TvResultsItem, newItem: TvResultsItem): Boolean =
-                oldItem == newItem
-        }
-    }
 
-    override fun onBindViewHolder(holder: TvshowAdapter.TvViewHolder, position: Int) {
-        val currentItem = getItem(position)
-        if (currentItem != null) {
-            holder.bind(currentItem)
-        }
-    }
+    inner class TvShowViewHolder(private val binding: ItemsTvshowBinding, private val listGenre: List<GenresItem>) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(tvshow: TvShowEntity) {
+            var genre = tvshow.genre
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvshowAdapter.TvViewHolder {
-        val binding = ItemsTvshowBinding.inflate(LayoutInflater.from(parent.context))
-        return TvViewHolder(binding, listGenres)
-    }
-
-    inner class TvViewHolder (private val binding: ItemsTvshowBinding, private val listGenres: List<GenresItem>) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(tvshow: TvResultsItem) {
-            with(binding) {
-                var genre = "loading..."
-
-                for (g in listGenres) {
-                    if (tvshow.genreId[0] == g.genreId) {
+            for (i in tvshow.genre.indices){
+                for (g in listGenre) {
+                    if (tvshow.genre[0].toString() == g.genreId.toString()) {
                         genre = g.genre
                         break
                     }
                 }
+            }
 
+            with(binding) {
                 tvTvshowTitle.text = tvshow.title
                 tvTvshowGenre.text = genre
                 Glide.with(itemView.context)
@@ -59,22 +40,38 @@ class TvshowAdapter(private val listGenres: List<GenresItem>) : PagingDataAdapte
                     .error(R.drawable.ic_image)
                     .into(imgTvshowPoster)
 
-                val tvshowEntity = TvShowDetailEntity(
-                    tvshow.tvId.toString(),
-                    tvshow.title,
-                    tvshow.description,
-                    tvshow.year,
-                    genre,
-                    tvshow.poster,
-                    ""
-                )
-
                 itemView.setOnClickListener {
                     val intent = Intent(itemView.context, DetailTvShowActivity::class.java)
-                    intent.putExtra(DetailTvShowActivity.EXTRA_TVSHOW, tvshowEntity)
+                    intent.putExtra(DetailTvShowActivity.EXTRA_TVSHOW, tvshow.tvshowId)
                     itemView.context.startActivity(intent)
                 }
             }
+        }
+    }
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TvShowEntity>() {
+            override fun areItemsTheSame(oldItem: TvShowEntity, newItem: TvShowEntity): Boolean {
+                return oldItem.tvshowId == newItem.tvshowId
+            }
+            override fun areContentsTheSame(oldItem: TvShowEntity, newItem: TvShowEntity): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): TvShowAdapter.TvShowViewHolder {
+        val binding = ItemsTvshowBinding.inflate(LayoutInflater.from(parent.context))
+        return TvShowViewHolder(binding, listGenre)
+    }
+
+    override fun onBindViewHolder(holder: TvShowAdapter.TvShowViewHolder, position: Int) {
+        val tv = getItem(position)
+        if (tv != null) {
+            holder.bind(tv)
         }
     }
 }

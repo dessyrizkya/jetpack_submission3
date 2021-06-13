@@ -1,15 +1,12 @@
 package com.jetpack.data.source.remote.response
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
 data class MovieResponse(
     @field:SerializedName("results")
     val results: List<ResultsItem>
 )
 
-@Parcelize
 data class ResultsItem(
     @field:SerializedName("overview")
     val description: String,
@@ -28,7 +25,7 @@ data class ResultsItem(
 
     @field:SerializedName("id")
     val movieId: Int
-) : Parcelable
+)
 
 data class MovieDetail(
     @field:SerializedName("overview")

@@ -8,14 +8,14 @@
 
     <string name="value_episode">%s eps</string>
     <string name="trailer">Trailer</string>
+    <string name="trailer_message">There is no trailer that we can show</string>
     <string name="description">Description:</string>
     <string name="line">|</string>
     <string name="detail_movie">Detail Movie</string>
     <string name="title_activity_detail_tv_show">DetailTvShowActivity</string>
     <string name="detail_tvshow">Detail TV Show</string>
     <string name="favorite">Favorite</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="logo">Logo</string>
     <string name="try_again">Try Again</string>
     <string name="lost_connection">Lost Connection</string>

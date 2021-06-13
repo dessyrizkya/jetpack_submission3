@@ -1,14 +1,17 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="colorPrimary">@color/purple</item>
         <item name="colorPrimaryDark">@color/darkpurple</item>
         <item name="colorAccent">@color/yellow</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Actionbar</item>
     </style>
 
-    <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/yellow</item>
+    <style name="ThemeOverlay.Actionbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
+        <item name="android:textColorPrimary">@color/yellow</item>
         <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
     <style name="FontTitle">

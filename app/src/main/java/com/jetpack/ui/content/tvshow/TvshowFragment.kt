@@ -2,45 +2,42 @@ package com.jetpack.ui.content.tvshow
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jetpack.R
 import com.jetpack.data.source.remote.response.GenresItem
 import com.jetpack.databinding.FragmentMovieBinding
-import com.jetpack.databinding.FragmentTvshowBinding
-import com.jetpack.ui.content.MovieLoadStateAdapter
+import com.jetpack.databinding.FragmentTvShowBinding
 import com.jetpack.ui.content.movie.MovieAdapter
 import com.jetpack.ui.content.movie.MovieViewModel
+import com.jetpack.vo.Status
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class TvshowFragment : Fragment() {
+class TvShowFragment : Fragment() {
 
-    private lateinit var fragmentTvBinding : FragmentTvshowBinding
-    private val tvshowViewModel : TvshowViewModel by viewModels()
-    private var gridLayoutManager: GridLayoutManager? = null
-    private lateinit var adapter: TvshowAdapter
+    private lateinit var binding: FragmentTvShowBinding
+    private val viewModel : TvShowViewModel by viewModels()
 
     private val genre = ArrayList<GenresItem>()
     private lateinit var listGenre : List<GenresItem>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        fragmentTvBinding = FragmentTvshowBinding.inflate(layoutInflater, container, false)
-        return fragmentTvBinding.root
+        binding = FragmentTvShowBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvshowViewModel.getGenres().observe(viewLifecycleOwner, { genres ->
+        viewModel.getGenres().observe(viewLifecycleOwner, { genres ->
             genre.clear()
             if (genres != null) {
                 genre.addAll(genres)
@@ -49,47 +46,67 @@ class TvshowFragment : Fragment() {
 
         listGenre = genre
 
-        adapter = TvshowAdapter(listGenre)
+        showNull(false)
+        setRecyclerView()
+        observeTvShows()
+    }
 
-        with(fragmentTvBinding) {
+    private fun observeTvShows() {
+        viewModel.getAllTvShows().observe(viewLifecycleOwner, { listMovie ->
+            if (listMovie != null) {
+                when (listMovie.status) {
+                    Status.LOADING -> showLoading(true)
+                    Status.SUCCESS -> {
+                        showLoading(false)
+                        Log.e("listTvshows", listMovie.data.toString())
+                        binding.rvTvshows.adapter?.let { adapter ->
+                            when (adapter) {
+                                is TvShowAdapter -> {
+                                    adapter.submitList(listMovie.data)
+                                    adapter.notifyDataSetChanged()
+                                }
+                            }
+                        }
+                    }
+                    Status.ERROR -> {
+                        showLoading(false)
+                        showNull(true)
+                        Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                showNull(true)
+            }
+        })
+    }
 
-            setGrid()
+    private fun setRecyclerView() {
+        with(binding) {
+            val config = resources.configuration.orientation
+            val grid = if (config == Configuration.ORIENTATION_PORTRAIT)  2 else 5
 
-            rvTvshows.setHasFixedSize(true)
-            rvTvshows.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = MovieLoadStateAdapter{adapter.retry()},
-                footer = MovieLoadStateAdapter{adapter.retry()}
-            )
-            btnTryAgain.setOnClickListener {
-                adapter.retry()
+            rvTvshows.apply {
+                layoutManager = GridLayoutManager(context, grid, LinearLayoutManager.VERTICAL, false)
+                adapter = TvShowAdapter(listGenre)
+
             }
         }
+    }
 
-        tvshowViewModel.tvshows.observe(viewLifecycleOwner){
-            adapter.submitData(viewLifecycleOwner.lifecycle, it)
-        }
-
-        adapter.addLoadStateListener { loadState ->
-            fragmentTvBinding.apply {
-                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
-                rvTvshows.isVisible = loadState.source.refresh is LoadState.NotLoading
-                btnTryAgain.isVisible =loadState.source.refresh is LoadState.Error
-                tvFailed.isVisible = loadState.source.refresh is LoadState.Error
-                imgEmpty.isVisible = loadState.source.refresh is LoadState.Error
-            }
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
     }
 
-    private fun setGrid() {
-        val config = resources.configuration.orientation
-        val grid = if (config == Configuration.ORIENTATION_PORTRAIT)  2 else 5
-
-        gridLayoutManager = GridLayoutManager(context, grid, LinearLayoutManager.VERTICAL, false)
-        fragmentTvBinding.rvTvshows.layoutManager = gridLayoutManager
+    private fun showNull(isNull: Boolean) {
+        if (isNull) {
+            binding.imgEmpty.visibility = View.VISIBLE
+        } else {
+            binding.imgEmpty.visibility = View.GONE
+        }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        setGrid()
-    }
 }

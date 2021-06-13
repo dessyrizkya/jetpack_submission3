@@ -1,34 +1,44 @@
-package com.jetpack.data.source.local.room
+package com.jetpack.data.local.room
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
-
+import com.jetpack.data.local.entity.MovieEntity
+import com.jetpack.data.local.entity.TvShowEntity
 
 @Dao
 interface LumiereDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertMovie(favoriteMovie: FavoriteMovie)
 
-    @Delete
-    fun deleteMovie(favoriteMovie: FavoriteMovie)
+    @Query("SELECT * FROM movieentities")
+    fun getMovies(): DataSource.Factory<Int, MovieEntity>
 
-    @Query("SELECT * from FavoriteMovie")
-    fun getAllMovies(): LiveData<List<FavoriteMovie>>
+    @Query("SELECT * FROM movieentities where movieId like :id")
+    fun getMovie(id:String): LiveData<MovieEntity>
 
-    @Query("SELECT * from FavoriteMovie where id like :id")
-    fun getMovieById(id: String): LiveData<List<FavoriteMovie>>
+    @Query("SELECT * FROM movieentities where isFavorited = 1")
+    fun getFavoritedMovies(): DataSource.Factory<Int, MovieEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMovie(movies: List<MovieEntity>)
+
+    @Update
+    fun updateMovie(movie: MovieEntity)
 
 
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertTvShow(favoriteTvShow: FavoriteTvShow)
+    @Query("SELECT * FROM tvshowentities")
+    fun getTvShows(): DataSource.Factory<Int, TvShowEntity>
 
-    @Delete
-    fun deleteTvShow(favoriteTvShow: FavoriteTvShow)
+    @Query("SELECT * FROM tvshowentities where tvId like :id")
+    fun getTvShow(id: String): LiveData<TvShowEntity>
 
-    @Query("SELECT * from FavoriteTvShow")
-    fun getAllTvShows(): LiveData<List<FavoriteTvShow>>
+    @Query("SELECT * FROM tvshowentities where isFavorited = 1")
+    fun getFavoritedTvs(): DataSource.Factory<Int, TvShowEntity>
 
-    @Query("SELECT * from FavoriteTvShow where id like :id")
-    fun getTvshowById(id: String): LiveData<List<FavoriteTvShow>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertTv(tvshow: List<TvShowEntity>)
+
+    @Update
+    fun updateTv(tvshow: TvShowEntity)
+
 }

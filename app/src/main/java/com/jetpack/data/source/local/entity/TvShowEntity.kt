@@ -1,24 +1,35 @@
-package com.jetpack.data.source.local.entity
+package com.jetpack.data.local.entity
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "tvshowentities")
 data class TvShowEntity(
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "tvId")
     var tvshowId: String,
-    var title: String,
-    var description: String,
-    var year: String,
-    var genre: String,
-    var poster: String
-)
 
-@Parcelize
-data class TvShowDetailEntity(
-    var tvshowId: String,
+    @ColumnInfo(name = "title")
     var title: String,
+
+    @ColumnInfo(name = "description")
     var description: String,
+
+    @ColumnInfo(name = "year")
     var year: String,
+
+    @ColumnInfo(name = "genre")
     var genre: String,
+
+    @ColumnInfo(name = "poster")
     var poster: String,
-    var episode: String
-) : Parcelable
+
+    @ColumnInfo(name = "episode")
+    var episode: String,
+
+    @ColumnInfo(name = "isFavorited")
+    var isFavorited: Boolean
+)
